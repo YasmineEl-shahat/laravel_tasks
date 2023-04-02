@@ -3,70 +3,75 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    //
-    private $allPosts = [
-        [
-            'id' => 3,
-            'title' => 'Javascript',
-            'description' => 'hello javascript',
-            'posted_by' => 'Yasmine',
-            'created_at' => '2023-04-01 10:00:00',
-        ],
-        [
-            'id' => 1,
-            'title' => 'Laravel',
-            'description' => 'hello laravel',
-            'posted_by' => 'Habiba',
-            'created_at' => '2023-04-01 10:00:00',
-        ],
-
-        [
-            'id' => 2,
-            'title' => 'PHP',
-            'description' => 'hello php',
-            'posted_by' => 'Nabila',
-            'created_at' => '2023-04-01 10:00:00',
-        ],
-
-        [
-            'id' => 3,
-            'title' => 'Javascript',
-            'description' => 'hello javascript',
-            'posted_by' => 'Mariam',
-            'created_at' => '2023-04-01 10:00:00',
-        ],
-
-    ];
     public function index()
     {
-        return view('posts.index', ['posts'=> $this -> allPosts]);
+        // $allPosts = Post::all(); // select * from posts // returns collection object
+        $allPosts = Post::paginate(7);
+
+        return view('posts.index', ['posts'=> $allPosts ]);
     }
     public function show($id)
     {
-        return view('posts.show', ['post'=> $this -> allPosts[0]]);
+        // $post = Post::find($id); //model object // select * from posts where id = $id
+        // $post = Post::where('id', $id); //elequent builder -> because you didn't execute
+        // $post = Post::where('id', $id)->first(); //model object
+        // $post = Post::where('id', $id)->get(); //collection
+        $post = Post::with('comments')->find($id);
+        return view('posts.show', ['post'=> $post]);
     }
     public function create()
     {
-        return view('posts.create');
+        $users = User::all();
+        return view('posts.create', ['users'=> $users]);
     }
+     public function store(Request $request)
+     {
+         // $data = request()->all();
+         $title = $request -> title;
+         $description = $request -> description;
+         $postCreator = $request -> post_creator;
+         //  $data = $request->all();
+         Post::create([
+            'title' => $title,
+            'description' => $description,
+            'user_id' => $postCreator
+         ]);
+
+         return to_route('posts.index');
+     }
     public function edit($id)
     {
-        return view('posts.edit', ['post'=> $this -> allPosts[0]]);
+        $users = User::all();
+        $post = Post::find($id);
+        return view('posts.edit', ['users'=> $users,'post'=> $post]);
     }
-    public function update($id)
+
+    public function update(Request $request, int $id)
     {
-        return view('posts.index', ['posts'=> $this -> allPosts]);
+        $title = $request -> title;
+        $description = $request -> description;
+        $postCreator = $request -> post_creator;
+        Post::where('id', $id)->update(
+            ['title' => $title,
+            'description' => $description,
+            'user_id' => $postCreator
+            ]
+        );
+        return to_route('posts.index');
     }
-    public function store()
+
+    public function destroy(int $id)
     {
-        return view('posts.index', ['posts'=> $this -> allPosts]);
-    }
-    public function delete()
-    {
-        return view('posts.index', ['posts'=> $this -> allPosts]);
+        Post::destroy($id);
+        return to_route('posts.index');
     }
 }
+
+// 1- schema structure change .. (create table, edit table, delete table)   ... database migration
+// 2- crud operations .. (insert row, edit row, delete row)

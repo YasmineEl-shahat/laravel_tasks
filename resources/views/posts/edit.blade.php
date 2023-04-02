@@ -3,23 +3,24 @@
 @section('title') Create @endsection
 
 @section('content')
-    <form action="{{route('posts.update', $post['id'])}}" method="put">
+    <form action="{{route('posts.update', $post['id'])}}" method="POST">
         @csrf
         @method('put')
         <div class="mb-3">
             <label class="form-label">Title</label>
-            <input  type="text" class="form-control" value="{{$post['title']}}" >
+            <input name="title" type="text" class="form-control" value="{{$post['title']}}" >
         </div>
         <div class="mb-3">
             <label  class="form-label">Description</label>
-            <textarea class="form-control"  rows="3">{{$post['description']}}</textarea>
+            <textarea name="description" class="form-control"  rows="3">{{$post['description']}}</textarea>
         </div>
 
         <div class="mb-3">
-            <label  class="form-label">Post Creator</label>
-            <select class="form-control">
-                <option value="1">{{$post['posted_by']}}</option>
-                <option value="2">Mariam</option>
+            <label class="form-label">Post Creator</label>
+            <select name="post_creator" class="form-control" value="{{$post['user']['name']}}">
+                @foreach($users as $user)
+                    <option value="{{$user->id}}"  @if($post->user_id == $user->id) selected="selected" @endif>{{$user->name}}</option>
+                @endforeach
             </select>
         </div>
 

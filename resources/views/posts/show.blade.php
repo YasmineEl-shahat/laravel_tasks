@@ -18,9 +18,38 @@
             Post Creator Info
         </div>
         <div class="card-body">
-            <h5 class="card-title">Posted by: {{$post['posted_by']}}</h5>
-            <p class="card-text">Created at: {{$post['created_at']}}</p>
+            @if($post['user'])
+                <h5 class="card-title">Posted by: {{$post['user']['name']}}</h5>
+            @endif
+            <p class="card-text">Created at: {{$post['created_at']->isoFormat('dddd Do of MMMM YYYY h:mm:ss A')}}</p>
         </div>
     </div>
+
+    <br />
+    <h3>Add a comment</h3>
+    <form method="POST" action="{{route('comments.store')}}">
+        @csrf
+        <input type="hidden" name="commentable_type" value="App\Models\Post">
+        <input type="hidden" name="commentable_id" value="{{ $post->id }}">
+        <textarea class="form-control" name="description"></textarea>
+        <br />
+        <button class="btn btn-success" type="submit">Submit Comment</button>
+    </form>
+
+    <br/>
+    <br/>
+    <br/>
+
+    @if($post->comments->isNotEmpty())
+    <h3>Comments:</h3>
+    @endif
+    <br/>
+    
+    @foreach ($post->comments as $comment)
+        <div>
+            {{ $comment->description }}
+        </div>
+        <br/>
+    @endforeach
 
 @endsection
