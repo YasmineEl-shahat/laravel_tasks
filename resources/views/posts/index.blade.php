@@ -10,6 +10,7 @@
     <tr>
         <th>id</th>
         <th>title</th>
+        <th>slug</th>
         <th>description</th>
         <th>posted_by</th> 
         <th>created_at</th>
@@ -19,6 +20,7 @@
         <tr>
             <td>{{$post['id']}}</td>
             <td>{{substr($post['title'], 0, 20)}}</td>
+            <td>{{substr($post['slug'], 0, 20)}}</td>
             <td>{{substr($post['description'], 0, 50)}}</td>
             <td>@if($post['user']) {{$post['user']['name']}} @endif</td>
             <td>{{$post['created_at']->isoFormat('YYYY-MM-DD')}}</td>

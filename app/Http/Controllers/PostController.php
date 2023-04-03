@@ -45,12 +45,12 @@ class PostController extends Controller
 
          $title = $request -> title;
          $description = $request -> description;
-         $postCreator = $request -> post_creator;
+         $userId = $request -> user_id;
          //  $data = $request->all();
          Post::create([
             'title' => $title,
             'description' => $description,
-            'user_id' => $postCreator
+            'user_id' => $userId
          ]);
 
          return to_route('posts.index');
@@ -77,11 +77,12 @@ class PostController extends Controller
          ]);
         $title = $request -> title;
         $description = $request -> description;
-        $postCreator = $request -> post_creator;
+        $userId = $request -> user_id;
+
         Post::where('id', $id)->update(
             ['title' => $title,
             'description' => $description,
-            'user_id' => $postCreator
+            'user_id' => $userId
             ]
         );
         return to_route('posts.index');

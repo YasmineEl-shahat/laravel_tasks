@@ -26,7 +26,7 @@
 
         <div class="mb-3">
             <label class="form-label">Post Creator</label>
-            <select name="post_creator" class="form-control" value="{{$post['user']['name']}}">
+            <select name="user->id" class="form-control" value="{{$post['user']['name']}}">
                 @foreach($users as $user)
                     <option value="{{$user->id}}"  @if($post->user_id == $user->id) selected="selected" @endif>{{$user->name}}</option>
                 @endforeach
