@@ -25,31 +25,45 @@
             <td> 
                 <a href="{{route('posts.show',$post['id'])}}" class='btn btn-info'> view</a>
                 <a href="{{route('posts.edit',$post['id'])}}" class='btn btn-info'> Edit</a>
-                <button  class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Delete</button>
-            </td>
+                <button  class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" 
+                data-id="{{ $post->id }}">Delete</button>
+            
+              </td>
         </tr>
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              
-              <div class="modal-body">
-              Are you sure you want to delete
-              </div>
-              <div class="modal-footer">
-              <form action="{{ route('posts.destroy', $post['id']) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Delete</button>
-                </form>
-
-              </div>
-            </div>
-          </div>
-        </div>
+    
     @endforeach
 </table>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-body">
+      Are you sure you want to delete post <span id="post-id"></span>
+      </div>
+      <div class="modal-footer">
+      <form action="" method="POST" class="d-inline" id='delete-form'>
+            @csrf
+            @method('DELETE')
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Delete</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let id;
+    $(document).ready(function() {
+        $('button[data-bs-target="#exampleModal"]').on('click', function() {
+            id = $(this).get(0).dataset['id'];
+            $('#post-id').text(id);
+            $('#delete-form').attr('action', '/posts/destroy/'+id);
+        });
+    });
+</script>
 {{ $posts->links() }}
 
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\storePostRequest;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -30,9 +31,14 @@ class PostController extends Controller
         $users = User::all();
         return view('posts.create', ['users'=> $users]);
     }
-     public function store(Request $request)
+     public function store(storePostRequest $request)
      {
          // $data = request()->all();
+         //  $request->validate([
+        //    'title' => ['required', 'min:3'],
+        //    'description' => ['required', 'min:5']], [
+        //    [['title.required' => 'my custom message']
+         //  ]]);
          $title = $request -> title;
          $description = $request -> description;
          $postCreator = $request -> post_creator;
@@ -68,7 +74,8 @@ class PostController extends Controller
 
     public function destroy(int $id)
     {
-        Post::destroy($id);
+        $post = Post::find($id);
+        $post->delete();
         return to_route('posts.index');
     }
 }
