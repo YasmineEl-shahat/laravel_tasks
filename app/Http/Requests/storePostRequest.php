@@ -22,14 +22,18 @@ class storePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'min:3'],
+            'title' => ['required', 'min:3', 'unique:posts'],
             'description' => ['required', 'min:5'],
+            'user_id' => [
+                'required',
+                'exists:users,id'
+            ],
         ];
     }
     public function messages(): array
     {
         return [
-            'title.required' => 'my custom message'
+            'title.required' => 'title can\'t be blank'
         ];
     }
 }

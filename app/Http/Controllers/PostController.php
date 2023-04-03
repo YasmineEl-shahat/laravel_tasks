@@ -34,11 +34,15 @@ class PostController extends Controller
      public function store(storePostRequest $request)
      {
          // $data = request()->all();
-         //  $request->validate([
+         //  $request->validate(
+        //      [
         //    'title' => ['required', 'min:3'],
-        //    'description' => ['required', 'min:5']], [
-        //    [['title.required' => 'my custom message']
-         //  ]]);
+        //    'description' => ['required', 'min:5']],
+        //      [
+        //         'title.required' => 'my custom message'
+        //         ]
+         //  );
+
          $title = $request -> title;
          $description = $request -> description;
          $postCreator = $request -> post_creator;
@@ -60,6 +64,17 @@ class PostController extends Controller
 
     public function update(Request $request, int $id)
     {
+        $post = Post::find($id);
+
+        // Validate the incoming request data
+        $request->validate([
+             'title' => 'required|min:3|unique:posts,title,' . $post->id,
+             'description' => 'required|min:5',
+             'user_id' => [
+                'required',
+                'exists:users,id'
+            ],
+         ]);
         $title = $request -> title;
         $description = $request -> description;
         $postCreator = $request -> post_creator;
