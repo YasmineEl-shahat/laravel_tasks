@@ -12,7 +12,7 @@
             </ul>
         </div>
     @endif
-    <form action="{{route('posts.update', $post['id'])}}" method="POST">
+    <form action="{{route('posts.update', $post['id'])}}" method="POST"  enctype='multipart/form-data'>
         @csrf
         @method('put')
         <div class="mb-3">
@@ -26,11 +26,16 @@
 
         <div class="mb-3">
             <label class="form-label">Post Creator</label>
-            <select name="user->id" class="form-control" value="{{$post['user']['name']}}">
+            <select name="user_id" class="form-control">
                 @foreach($users as $user)
                     <option value="{{$user->id}}"  @if($post->user_id == $user->id) selected="selected" @endif>{{$user->name}}</option>
                 @endforeach
             </select>
+        </div>
+
+        <div class="mb-3">
+            <label  class="form-label">image</label>
+            <input type="file" name="image" class="form-control">
         </div>
 
         <button class="btn btn-success">Submit</button>

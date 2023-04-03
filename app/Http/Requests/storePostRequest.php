@@ -28,6 +28,7 @@ class storePostRequest extends FormRequest
                 'required',
                 'exists:users,id'
             ],
+            'image' => 'file|mimes:jpg,png|image|max:2048',
         ];
     }
     public function messages(): array

@@ -3,6 +3,8 @@
 @section('title') Show @endsection
 
 @section('content')
+    @if($post->image)  <img width="400px" src="{{ asset('uploads/posts/' . $post->image) }}" alt="post image"> @endif
+
     <div class="card mt-4">
         <div class="card-header">
             Post Info

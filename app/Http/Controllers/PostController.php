@@ -46,11 +46,13 @@ class PostController extends Controller
          $title = $request -> title;
          $description = $request -> description;
          $userId = $request -> user_id;
+         $image = $request->file('image');
          //  $data = $request->all();
          Post::create([
             'title' => $title,
             'description' => $description,
-            'user_id' => $userId
+            'user_id' => $userId,
+            'image'=> $image
          ]);
 
          return to_route('posts.index');
@@ -72,17 +74,20 @@ class PostController extends Controller
              'description' => 'required|min:5',
              'user_id' => [
                 'required',
-                'exists:users,id'
+                'exists:users,id',
             ],
+            'image' => 'file|mimes:jpg,png|image|max:2048',
          ]);
         $title = $request -> title;
         $description = $request -> description;
         $userId = $request -> user_id;
-
+        $image = $request->file('image');
+        $imageName = $post->setUpdatedImageAttribute($image);
         Post::where('id', $id)->update(
             ['title' => $title,
             'description' => $description,
-            'user_id' => $userId
+            'user_id' => $userId,
+            'image'=>   $imageName
             ]
         );
         return to_route('posts.index');
@@ -91,6 +96,7 @@ class PostController extends Controller
     public function destroy(int $id)
     {
         $post = Post::find($id);
+        $post->deleteImage(); // delete the image
         $post->delete();
         return to_route('posts.index');
     }
