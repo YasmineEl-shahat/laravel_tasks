@@ -39,13 +39,13 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// gitub auth
 
-
-Route::get('/auth/redirect/github', function () {
+Route::get('/auth/github/redirect', function () {
     return Socialite::driver('github')->redirect();
 });
 
-Route::get('/auth/callback/github', function () {
+Route::get('/auth/github/callback', function () {
     $githubUser = Socialite::driver('github')->user();
 
     $user = User::updateOrCreate([
@@ -55,6 +55,30 @@ Route::get('/auth/callback/github', function () {
         'email' => $githubUser->email,
         'github_token' => $githubUser->token,
         'github_refresh_token' => $githubUser->refreshToken,
+    ]);
+
+    Auth::login($user);
+
+    // we may use github token to access repos
+    // Http::get('/api.github.com/repositories', [$githubUser->token]);
+    return redirect(to:'/posts');
+});
+
+// google auth
+Route::get('/auth/google/redirect', function () {
+    return Socialite::driver('google')->redirect();
+});
+
+Route::get('/auth/google/callback', function () {
+    $googleUser = Socialite::driver('google')->user();
+
+    $user = User::updateOrCreate([
+        'email' => $googleUser->email,
+    ], [
+        'name' => $googleUser->name,
+        'email' => $googleUser->email,
+        'google_token' => $googleUser->token,
+        'google_refresh_token' => $googleUser->refreshToken,
     ]);
 
     Auth::login($user);
