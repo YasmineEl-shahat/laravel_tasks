@@ -3,6 +3,8 @@
 use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,3 +38,28 @@ Route::group(
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+Route::get('/auth/redirect/github', function () {
+    return Socialite::driver('github')->redirect();
+});
+
+Route::get('/auth/callback/github', function () {
+    $githubUser = Socialite::driver('github')->user();
+
+    $user = User::updateOrCreate([
+        'email' => $githubUser->email,
+    ], [
+        'name' => $githubUser->name,
+        'email' => $githubUser->email,
+        'github_token' => $githubUser->token,
+        'github_refresh_token' => $githubUser->refreshToken,
+    ]);
+
+    Auth::login($user);
+
+    // we may use github token to access repos
+    // Http::get('/api.github.com/repositories', [$githubUser->token]);
+    return redirect(to:'/posts');
+});
